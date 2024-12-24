@@ -1,0 +1,84 @@
+name: Node.js and React CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Backend Job
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: |
+          npm install
+
+      - name: Run Backend Tests
+        working-directory: ./backend
+        run: |
+          npm test  # Assuming you have tests for the backend
+
+      - name: Build Backend (Optional, if needed)
+        working-directory: ./backend
+        run: |
+          npm run build  # Optional, if you have a build script
+
+  # Frontend Job
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: |
+          npm install
+
+      - name: Run Frontend Tests
+        working-directory: ./frontend
+        run: |
+          npm test  # Assuming you have tests for the frontend
+
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm run build
+
+  # Deployment (Optional, for both Backend and Frontend)
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]  # Wait for both backend and frontend jobs to finish
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Deploy Backend (e.g., Heroku, AWS, etc.)
+      - name: Deploy Backend
+        run: |
+          # Add your deployment commands for backend here
+          ech
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
